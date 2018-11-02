@@ -1,6 +1,12 @@
 import sublime
 import sublime_plugin
 import json
+import re
+from os import path
+import shutil 
+
+# settings
+sourcePath = "source_path"
 
 #Regulars for columns:
 dateRegex       = "\\[\\s?[0-9]{1,2} \\s?[A-Z][a-z]{2} [0-9]{4} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2},[0-9]{0,3}]"
@@ -10,14 +16,13 @@ threadEnter     = ".(cc|h):[0-9]{1,5} (.*): Enter"
 threadExit      = " Exit"
 threadRegex     = "\\[0x[a-zA-Z0-9]{12}]"
 pathRegex       = "sdl_core/src/(.*).(cc|h):[0-9]{1,5}" 
+fullPathFile	= "(/.*)(/sdl_core/src/.{0,}\\.(cc|h|cpp|hpp)):(\\d{1,})"
 
 #flags for commands
 actThreadFlag    = False
 actDateFlag      = False
 actPathFlag      = False
 actComponentFlag = False
-
-
 
 def getSelectedText(self):
 	#array of selection regions
@@ -125,5 +130,12 @@ class FilterByValueCommand(sublime_plugin.TextCommand):
 
 			for i in range (0, len(trcRegions)):
 				leftBorder+= self.view.insert(edit, leftBorder, trcRegions[i])
+
+
+class JumpToFileCommand(sublime_plugin.TextCommand):
+	def run(self, edit):
+		primaryPath = re.search(fullPathFile, self.view.substr(self.view.line(self.view.sel()[0])))
+		self.view.window().open_file(self.view.settings().get(sourcePath) +
+			primaryPath.group(2) + ":" + primaryPath.group(4), sublime.ENCODED_POSITION)
 
 

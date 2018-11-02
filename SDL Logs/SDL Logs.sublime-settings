@@ -1,0 +1,10 @@
+{
+    "color_scheme": "Packages/SDL Logs/SDL Logs.sublime-color-scheme",
+    "syntax": "Packages/SDL Logs/SDL Logs.sublime-syntax",
+    "extensions": [
+        "log",
+        "logfile"
+    ],
+    "source_path": "/home/dkandyba/Work/Synk4"
+}
+
