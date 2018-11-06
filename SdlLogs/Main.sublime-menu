@@ -5,19 +5,19 @@
         "mnemonic": "P",
         "id": "package-settings",
         "children": [
-          { "caption": "SDL Logs",
+          { "caption": "SdlLogs",
             "children": [
               { "caption": "README",
                 "command": "open_file",
                 "args": {
-                  "target": "${packages}/SDL Logs/README.md"
+                  "target": "${packages}/README.md"
                 }
               },
               { "caption": "-" },
               { "caption": "Settings",
                 "command": "edit_settings",
                 "args": {
-                  "base_file": "${packages}/SDL Logs/SDL Logs.sublime-settings",
+                  "base_file": "${packages}/SdlLogs/SdlLogs.sublime-settings",
                   "default": "{\n\t$0\n}\n"
                 }
               },
@@ -25,14 +25,14 @@
               { "caption": "Color scheme",
                 "command": "edit_settings",
                 "args": {
-                  "base_file": "${packages}/SDL Logs/SDL Logs.sublime-color-scheme",
+                  "base_file": "${packages}/SdlLogs/SdlLogs.sublime-color-scheme",
                   "default": "{\n\t$0\n}\n"
                 }
               },
               { "caption": "Key Bindings",
                 "command": "edit_settings",
                 "args": {
-                  "base_file": "${packages}/SDL Logs/Default (${platform}).sublime-keymap",
+                  "base_file": "${packages}/SdlLogs/Default (${platform}).sublime-keymap",
                   "default": "[\n\t$0\n]\n"
                 }
               },
