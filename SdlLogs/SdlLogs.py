@@ -162,9 +162,7 @@ class FunctionCallCommand(sublime_plugin.TextCommand):
         pos_fatal = 0
         enter_regex = "initial fake value"
         result_array = []
-
         while enter_regex:
-
             enter_region = self.view.find(syntax.thread_enter, pos_fatal)
             enter_regex = self.view.substr(enter_region)
             enter_regex = enter_regex[enter_regex.find(" ")+1:]
@@ -179,7 +177,6 @@ class FunctionCallCommand(sublime_plugin.TextCommand):
                     self.view.show(enter_region)
                     result_array.append(enter_region)
                     pos_fatal = enter_region.b
-
         self.view.add_regions('func_call', result_array,
                               'param.func_call.SDL_Logs')
 
@@ -205,14 +202,11 @@ class FilterByValueCommand(sublime_plugin.TextCommand):
         if sel_text_regex is not "":
             trc_regions = self.view.find_all(sel_text_regex)
             left_border = 0
-
             for i in range(0, len(trc_regions)):
                 trc_regions[i] = self.view.full_line(trc_regions[i])
                 trc_regions[i] = self.view.substr(trc_regions[i])
-
             self.view.erase(edit, sublime.Region(0, self.view.size()))
             left_border = 0
-
             for cur_regions in trc_regions:
                 left_border += self.view.insert(edit,
                                                 left_border, cur_regions)
@@ -232,12 +226,10 @@ class JumpToFileCommand(sublime_plugin.TextCommand):
         """
         FULL_PATH_FILE = "(/.*)(/sdl_core/src/.{0,}\\.(cc|h|cpp|hpp)):(\\d{1,})"
         CORRECTED_PATH = "(/[^/ ]*)+/?"
-
         primaryPath = re.search(FULL_PATH_FILE, self.view.substr(
             self.view.line(self.view.sel()[0])))
         isItPath = re.search(CORRECTED_PATH, self.view.substr(
             self.view.line(self.view.sel()[0])))
-
         if primaryPath:
             if self.view.settings().get(SettingsTags.SOURCE_PATH):
                 file = self.view.settings().get(
@@ -248,7 +240,6 @@ class JumpToFileCommand(sublime_plugin.TextCommand):
                 file = primaryPath.group(1) + primaryPath.group(2)
                 open_file(self,
                           file, "File '{0}' not found. You can write path to source files in settings and try again. Or file really absent".format(file))
-
         elif isItPath:
             sublime.error_message(
                 "Expected '/sdl_core/src/' in '{0}' ".format(isItPath.group(0)))
@@ -260,7 +251,6 @@ class FunctionTreeCommand(sublime_plugin.TextCommand):
     """
 
     def run(self, edit):
-
         FUNC_TREE_BEGIN = ".(cc|h):[0-9]{1,5} (.*)"
         FUNC_TREE_END = "(.*)$"
         sel_text_regex = get_selected_text(self)
@@ -268,14 +258,11 @@ class FunctionTreeCommand(sublime_plugin.TextCommand):
         if sel_text_regex:
             trc_regions = self.view.find_all(
                 FUNC_TREE_BEGIN + sel_text_regex + FUNC_TREE_END)
-
             for i in range(0, len(trc_regions)):
                 hlText.append(sublime.Region(trc_regions[i].a+8, 0))
                 trc_regions[i] = self.view.substr(trc_regions[i])
                 trc_regions[i] = trc_regions[i][trc_regions[i].find(" ")+1:]
-
                 hlText[i].b = hlText[i].a + len(trc_regions[i])
-
                 if trc_regions[i].find(" Exit") is not -1:
                     break
         self.view.add_regions('func_tree', hlText, 'param.func_tree.SDL_Logs')
