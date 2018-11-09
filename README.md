@@ -7,6 +7,8 @@ This plugin requires at least Sublime Text 3 v.3176 or higher for best performan
 ## Installing
 - Move directory "SdlLogs" to Sublime Packages folder.
 (Generally at /home/*USER*/.config/sublime-text-3/Packages)
+- Should install package for yaml
+(Enter in terminal 'sudo apt-get install python-yaml')
 - Change syntax in Sublime to SdlLogs.
 (View -> Syntax ->SdlLogs)
 
