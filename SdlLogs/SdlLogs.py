@@ -83,7 +83,6 @@ class LogSyntax:
                 path to setting file
         """
         obj = sublime.load_settings(pathToSettings).get(self.NAME)
-        print(obj)
         if not obj:
             sublime.error_message("Absent path to syntax file")
         else:
