@@ -6,9 +6,19 @@ Sublime Text plugin  for handy work with SdlLogs.
 ### Requirements
 This plugin requires at least Sublime Text 3 v.3176 or higher for best performance and correct syntax
 
-Install YAML:  
+1. Install YAML:  
 
-    sudo apt-get install python-yaml 
+        sudo apt-get install python-yaml 
+
+**For next steps you should open sublime**
+
+2. Install the *Package Control* package:
+    - press `"ctrl+shift+p"`
+    - enter in the prompt `"Install Package Control"` and press `enter`
+    
+3. Install the *PackageDev* package:
+    - press `"ctrl+shift+p"` to enter `"Package Control: Install Package"` and then press `enter`
+    - enter in prompt `"PackageDev"` and also press `enter`
 
 ### How to install sdl_sublime_log_plugin:
 1. Clone this repository. If you have downloaded project as like archive, you have to unpacked it.

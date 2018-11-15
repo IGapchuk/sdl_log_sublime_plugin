@@ -166,7 +166,13 @@ class KeyMapRegex:
         """
         Load user and plugin key maps.
         """
-        user_keymap = sublime.load_resource(KeyMapRegex.USER_KEY_MAP)
+        packages_path = sublime.packages_path().split(os.path.sep)
+        path_to_user_settings = os.path.sep.join(
+            packages_path[:len(packages_path) - 1])
+        user_keymap = ""
+        if path.exists(path.join(path_to_user_settings, KeyMapRegex.USER_KEY_MAP)):
+            user_keymap = sublime.load_resource(KeyMapRegex.USER_KEY_MAP)
+
         plugin_keymap = sublime.load_resource(KeyMapRegex.PLUGIN_KEY_MAP)
 
         user_keybindigs = re.findall(
@@ -222,12 +228,12 @@ class LogSyntax:
         LINE = "line"
         MESSAGE = "message"
         JUNK = "junk"
-        THREAD_ENTER  = "thread_enter"
-        THREAD_EXIT   = "thread_exit"
-        THREAD        = "thread"
-        MSG_STRING    = "msg_string"
+        THREAD_ENTER = "thread_enter"
+        THREAD_EXIT = "thread_exit"
+        THREAD = "thread"
+        MSG_STRING = "msg_string"
         BORDER_STRING = "border_string"
-        APP_MARK      = "app_mark"
+        APP_MARK = "app_mark"
         KEY_VALUE_COMMAND = "key_value_command"
         KEY_MAP = "key_map"
 
@@ -241,9 +247,9 @@ class LogSyntax:
         self.junk = ""
         self.thread_enter = ""
         self.thread_exit = ""
-        self.msg_string    = ""
+        self.msg_string = ""
         self.border_string = ""
-        self.app_mark      = ""
+        self.app_mark = ""
         self.key_value_command = ""
         self.key_map = ""
 
@@ -385,6 +391,7 @@ class FilterByValueCommand(sublime_plugin.TextCommand):
     """
         Clipping all strings which contain selected text
     """
+
     def run(self, edit, ext_value):
         """
             Parameters
@@ -400,17 +407,17 @@ class FilterByValueCommand(sublime_plugin.TextCommand):
             trc_regions = self.view.find_all(sel_text_regex)
             active_window = sublime.active_window()
             left_border = 0
-            for i in range (0, len(trc_regions)):
+            for i in range(0, len(trc_regions)):
                 trc_regions[i] = self.view.full_line(trc_regions[i])
                 trc_regions[i] = self.view.substr(trc_regions[i])
 
             if ext_value != "this_window":
                 active_window.new_file()
-            else:   
+            else:
                 self.view.erase(edit, sublime.Region(0, self.view.size()))
             view = active_window.active_view()
             for region in trc_regions:
-                left_border+= view.insert(edit, left_border, region)
+                left_border += view.insert(edit, left_border, region)
 
 
 class JumpToFileCommand(sublime_plugin.TextCommand):
@@ -488,28 +495,31 @@ class FunctionTreeCommand(sublime_plugin.TextCommand):
     """
         Represents function tree
     """
+
     def run(self, edit):
         pos = 0
         deep_counter = 1
         sel_text_regex = self.view.sel()[0]
         if sel_text_regex.size() != 0:
             sel_text_regex = self.view.full_line(sel_text_regex)
-            sel_text_regex = self.view.find(syntax.thread[2:-1], sel_text_regex.begin())
+            sel_text_regex = self.view.find(
+                syntax.thread[2:-1], sel_text_regex.begin())
             sel_text_regex = self.view.substr(sel_text_regex)
-            self.view.run_command('filter_by_value', {'ext_value': sel_text_regex})
+            self.view.run_command('filter_by_value', {
+                                  'ext_value': sel_text_regex})
             active_window = sublime.active_window()
             view = active_window.active_view()
             region = view.find(sel_text_regex, pos)
-            while region != sublime.Region(-1,-1):
+            while region != sublime.Region(-1, -1):
                 region = view.full_line(region)
                 trc_string = view.substr(region)
-                for i in range (0,deep_counter):
+                for i in range(0, deep_counter):
                     view.insert(edit, region.begin(), "     ")
                 pos = region.end()+deep_counter*5
                 if trc_string.find(syntax.thread_enter) != -1:
-                    deep_counter+=1
+                    deep_counter += 1
                 elif trc_string.find(syntax.thread_exit) != -1:
-                    deep_counter-=1  
+                    deep_counter -= 1
                 region = view.find(sel_text_regex, pos)
 
 
@@ -518,37 +528,41 @@ class IgnCycleListener(sublime_plugin.ViewEventListener):
         On log file loaded:
         Creates separator in text for every ignition cycle 
     """
+
     def on_load(self):
         file_name = self.view.file_name()
-        if (file_name.find(".log")!= -1):
+        if (file_name.find(".log") != -1):
             pos = 0
-            app_region=self.view.find(syntax.app_mark, pos)
-            while app_region != sublime.Region(-1,-1):
+            app_region = self.view.find(syntax.app_mark, pos)
+            while app_region != sublime.Region(-1, -1):
                 full_line = self.view.full_line(app_region)
                 if full_line.begin() == 0:
                     full_line.b = full_line.a
                 else:
-                    full_line.a-=1
+                    full_line.a -= 1
                     full_line.b = full_line.a
                     full_line = self.view.full_line(full_line)
                 border_line = full_line
                 full_line = self.view.substr(full_line)
                 if full_line.find("===") == -1:
-                    self.view.run_command("text_insert", {'end_pos': border_line.end()})
+                    self.view.run_command(
+                        "text_insert", {'end_pos': border_line.end()})
                 pos = self.view.find(syntax.app_mark, pos)
                 pos = pos.end()
-                app_region=self.view.find(syntax.app_mark, pos)
+                app_region = self.view.find(syntax.app_mark, pos)
 
 
 class TextInsertCommand(sublime_plugin.TextCommand):
     """
         Inserts text in current file
     """
+
     def run(self, edit, end_pos):
         """
         end_pos: position for insert
         """
-        self.view.insert(edit, end_pos, syntax.border_string+"\n"+syntax.msg_string+"\n"+syntax.border_string+"\n")
+        self.view.insert(edit, end_pos, syntax.border_string +
+                         "\n"+syntax.msg_string+"\n"+syntax.border_string+"\n")
 
 
 syntax = LogSyntax()
